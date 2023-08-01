@@ -6,34 +6,28 @@ fn main() {
 
     for s in 9_u32..100 {
         for w in 4.. (s / 2 + 1) {
-            if w.pow(2) % s != 0 {continue}
+            if w.pow(2) % s != 0 || w * 2 >= s {continue}
 
             let xy = w.pow(4) / s.pow(2);
             let xy_pf = prime_factor(xy as usize);
 
             if xy_pf.len() < 2 {continue}
-            let z = xy / w;
 
             for x in xy.pow(1/2).. w {
                 if xy % x != 0 || xy / x >= x || xy % w != 0 {continue}
                 let y = xy / x;
-
+                let z_max = y * w / s;
+    
                 let x_w = x as f64 / w as f64;
                 let y_x = y as f64 / x as f64;
-                let z_y = z as f64 / y as f64;
                 let w_s = w as f64 / s as f64;
-//                println!(" x/w: {}; y/x: {}; z/y: {}; w/s: {}", x_w, y_x, z_y, w_s);
 
-//                if x_w > w_s && y_x > w_s {
-//                    println!(" s: {}; w: {}; x: {}; y: {}; z: {}; z/y > w/s: {}", s, w, x, y, z, z_y > w_s);
-//                }
+                if x_w > w_s && y_x > w_s {
+                    println!(" s: {}; w: {}; x: {}; y: {}; z_max: {}", s, w, x, y, z_max);
+                }
 
-                sw_pairs.entry([s, w]).or_insert(Vec::<[u32; 3]>::new()).push([x, y, z]);
-//                println!(" s: {}; w: {}; x: {}; y: {}; z: {}", s, w, x, y, z);
+                sw_pairs.entry([s, w]).or_insert(Vec::<[u32; 3]>::new()).push([x, y, z_max]);
             }
-
-//            println!("{}, {}", s, w);
-//            println!("{}, {:?}", xy, xy_pf);
         }
     }
 
